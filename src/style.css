@@ -1,0 +1,216 @@
+/* styles.css */
+
+.container {
+    max-width: 100000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .group-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .status {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #ccc;
+    border-radius: 8px; /* Increase the border radius for a more rounded look */
+    padding: 10px; /* Add more padding for better spacing */
+    background-color: #f5f5f5; /* Add a light background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+  }
+  
+  .status div {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #ffffff; /* Add a white background color for each status item */
+    margin: 4px; /* Add some margin around each status item */
+  }
+  
+  .status div span {
+    margin: 0 5px;
+  }
+  
+  /* Additional styles for success status */
+  .status .success {
+    color: #28a745; /* Use green color for success status text */
+    font-weight: bold; /* Make the success status text bold */
+  }
+  
+  /* Additional styles for error status */
+  .status .error {
+    color: #dc3545; /* Use red color for error status text */
+    font-weight: bold; /* Make the error status text bold */
+  }
+  
+  .add-group-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Add some space between the input fields and the button */
+    margin-bottom: 30px;
+  }
+  
+  .add-group-inputs input[type='number'] {
+    width: 60px;
+    padding: 8px;
+    text-align: center;
+    font-size: 16px;
+    border: 2px solid #ccc; /* Add a border to the input fields */
+    border-radius: 4px;
+    transition: border-color 0.2s ease;
+  }
+  
+  .add-group-inputs input[type='number']:focus {
+    outline: none;
+    border-color: #007bff; /* Change the border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle box shadow on focus */
+  }
+  .add-group-button{
+    font-size: 16px;
+    padding: 8px 16px;
+    margin-bottom: 50px;
+    border: none;
+    background-color: transparent; /* Remove the background color */
+    color: #007bff; /* Set the button text color to blue */
+    cursor: pointer;
+    transition: color 0.2s ease; /* Add a smooth color transition */
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-group-button:hover {
+    color: #0056b3; /* Change the text color on hover */
+  }
+  
+  .add-group-button i {
+    font-size: 16px; /* Adjust the font size of the "+" symbol */
+    margin-right: 5px; /* Add spacing between the "+" symbol and the text */
+  }
+  
+ .show-status-btn {
+  font-size: 16px;
+  padding: 8px 16px;
+  margin-top: 30px;
+  border: none;
+  background-color: #007bff; /* Set the background color to blue */
+  color: #fff;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.show-status-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+  
+  .success-icon {
+    font-size: 24px;
+    color: #28a745;
+    margin-left: 10px;
+  }
+  
+  .left-box {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .left-box input[type='number'] {
+    width: 40px;
+    padding: 8px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  .left-box .group-number {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .left-box .arrow-icon {
+    font-size: 20px;
+    color: #007bff;
+  }
+  
+  .group-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .group-container > * {
+    margin-bottom: 10px;
+  }
+  
+  /* Additional styles to make the boxes more visually appealing */
+  .group-container {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .group-number-input {
+    display: flex;
+    align-items: center;
+  }
+  
+  .group-number-input input {
+    margin-right: 5px;
+  }
+  
+  .arrow-icon {
+    margin-left: auto;
+  }
+  
+  .add-group-container {
+    position: relative;
+  }
+  
+  .add-group-button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-left: 10px; /* Add some spacing between the input fields and the Add Group button */
+  }
+  .delete-icon {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #007bff; /* Blue color */
+    color: #fff; /* White text color */
+    font-size: 18px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  /* On hover, change the background color slightly darker */
+  .delete-icon:hover {
+    background-color: #0056b3;
+  }
+  
