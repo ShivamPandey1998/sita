@@ -1,31 +1,44 @@
-// TodoApp.js
-
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { addGroup, deleteGroup, fetchTodoStatus } from './actions';
 import './style.css';
 
-const TodoApp = ({ groups, todos, addGroup, deleteGroup, fetchTodoStatus }) => {
+const TodoApp = ({
+  groups,
+  todos,
+  addGroup,
+  deleteGroup,
+  fetchTodoStatus,
+  loadingStatusProp, 
+  errorStatusProp, 
+}) => {
   const [newGroupFrom, setNewGroupFrom] = useState('');
   const [newGroupTo, setNewGroupTo] = useState('');
   const [newGroupName, setNewGroupName] = useState('');
+  const [addError, setAddError] = useState('');
+  const [loadingStatus, setLoadingStatus] = useState(loadingStatusProp);
+  const [errorStatus, setErrorStatus] = useState(errorStatusProp); 
 
-  const handleGroupChange = (index, field, value) => {
-    // Remove the unused variable 'updatedGroups'
-    groups.map((group, i) =>
+  const handleGroupChange = useCallback((index, field, value) => {
+    const updatedGroups = groups.map((group, i) =>
       i === index ? { ...group, [field]: value } : group
     );
+  }, [groups]);
 
-    // Perform any validation here (e.g., check if the rules for groups are valid).
-    // For simplicity, I'm not including the validation here.
+  const handleShowStatus = async () => {
+    try {
+      setLoadingStatus(true);
+      setErrorStatus(false);
 
-    // Dispatch the action to update the groups in the Redux store.
-    // For example, you could have an action called updateGroups.
-    // updateGroups(updatedGroups);
-  };
+      for (const group of groups) {
+        await fetchTodoStatus(group);
+      }
 
-  const handleShowStatus = () => {
-    groups.forEach((group) => fetchTodoStatus(group));
+      setLoadingStatus(false);
+    } catch (error) {
+      setLoadingStatus(false);
+      setErrorStatus(true);
+    }
   };
 
   const handleAddGroup = () => {
@@ -35,9 +48,10 @@ const TodoApp = ({ groups, todos, addGroup, deleteGroup, fetchTodoStatus }) => {
       to: parseInt(newGroupTo, 10),
     };
 
-    // Perform validation here (Rules 1, 2, and 3).
     if (!isValidGroup(newGroup, groups)) {
-      // Handle validation errors here.
+      setAddError(
+        'Invalid group: The group must cover the entire range of 1-10 and have no gaps or overlaps.'
+      );
       return;
     }
 
@@ -45,16 +59,15 @@ const TodoApp = ({ groups, todos, addGroup, deleteGroup, fetchTodoStatus }) => {
     setNewGroupName('');
     setNewGroupFrom('');
     setNewGroupTo('');
+    setAddError('');
   };
 
   const isValidGroup = (newGroup, existingGroups) => {
-    // Rule 1: The entire range of 1-10 should be covered and no group can go outside the range.
     if (newGroup.from < 1 || newGroup.to > 10) {
       console.log('Group must cover the entire range of 1-10.');
       return false;
     }
 
-    // Rule 2: There should not be any gaps between consecutive groups.
     existingGroups.sort((a, b) => a.from - b.from);
     for (let i = 1; i < existingGroups.length; i++) {
       if (existingGroups[i].from - existingGroups[i - 1].to !== 1) {
@@ -63,7 +76,6 @@ const TodoApp = ({ groups, todos, addGroup, deleteGroup, fetchTodoStatus }) => {
       }
     }
 
-    // Rule 3: There should not be overlap between consecutive groups.
     for (let i = 1; i < existingGroups.length; i++) {
       if (existingGroups[i].from <= existingGroups[i - 1].to) {
         console.log('There should not be overlap between consecutive groups.');
@@ -89,61 +101,70 @@ const TodoApp = ({ groups, todos, addGroup, deleteGroup, fetchTodoStatus }) => {
                 min="1"
                 max="10"
                 value={group.from}
-                onChange={(e) => handleGroupChange(index, 'from', parseInt(e.target.value))}
+                onChange={(e) =>
+                  handleGroupChange(index, 'from', parseInt(e.target.value, 10))
+                }
               />
               <div className="arrow-icon">
-                <i className="fas fa-arrow-right"></i> {/* Add your arrow icon here */}
+                <i className="fas fa-arrow-right"></i>
               </div>
               <input
                 type="number"
                 min="1"
                 max="10"
                 value={group.to}
-                onChange={(e) => handleGroupChange(index, 'to', parseInt(e.target.value))}
+                onChange={(e) =>
+                  handleGroupChange(index, 'to', parseInt(e.target.value, 10))
+                }
               />
+              {/* <div className="group-range">({group.from} - {group.to})</div> */}
             </div>
             <div className="status">
-               {/* Display the status data */}
-  {todos[index]?.completedStatus?.map((todo, i) => (
-    <div key={todo.id} className={todo.completed ? "success" : "error"}>
-      ({todo.id}) {todo.completed ? "true" : "false"}
-    </div>
-  ))}
+              {todos[index]?.completedStatus?.map((todo, i) => (
+                <div key={todo.id} className={todo.completed ? 'success' : 'error'}>
+                  ({todo.id}) {todo.completed ? 'true' : 'false'}
+                </div>
+              ))}
               <div className="success-icon">
-                <i className="fas fa-check-circle"></i> {/* Add your success icon here */}
+                <i className="fas fa-check-circle"></i>
               </div>
             </div>
           </div>
         ))}
       </div>
       <div className="add-group-container">
-      <div className="add-group-inputs">
-        <div className="group-number-input">
-          <input
-            type="number"
-            placeholder="From"
-            value={newGroupFrom}
-            onChange={(e) => setNewGroupFrom(e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="To"
-            value={newGroupTo}
-            onChange={(e) => setNewGroupTo(e.target.value)}
-          />
+        <div className="add-group-inputs">
+          <div className="group-number-input">
+            <input
+              type="number"
+              placeholder="From"
+              value={newGroupFrom}
+              onChange={(e) => setNewGroupFrom(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="To"
+              value={newGroupTo}
+              onChange={(e) => setNewGroupTo(e.target.value)}
+            />
+          </div>
+          <div>
+            <button onClick={handleAddGroup} className="add-group-button">
+              <i className="fas fa-plus"></i> Add Group
+            </button>
+            {addError && <div className="error-message">{addError}</div>}
+          </div>
         </div>
-        <div>
-           <button onClick={handleAddGroup} className='add-group-button'>
-          <i className="fas fa-plus"></i> Add Group
+        <button
+          className="show-status-btn"
+          onClick={handleShowStatus}
+          disabled={loadingStatus}
+        >
+          {loadingStatus ? 'Loading...' : 'Show Status'}
         </button>
-        </div>
-      </div >
-      <button className="show-status-btn" onClick={handleShowStatus}>
-        Show Status
-      </button>
+        {errorStatus && <div className="error-message">Error fetching status data</div>}
+      </div>
     </div>
-  </div>
-
   );
 };
 
@@ -151,7 +172,11 @@ const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     todos: state.todos,
+    loadingStatusProp: state.loadingStatus, // Add this line to map to the prop
+    errorStatusProp: state.errorStatus, // Add this line to map to the prop
   };
 };
 
-export default connect(mapStateToProps, { addGroup, deleteGroup, fetchTodoStatus })(TodoApp);
+export default connect(mapStateToProps, { addGroup, deleteGroup, fetchTodoStatus })(
+  TodoApp
+);
